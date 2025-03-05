@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Crypto Coins Animation</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: black; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script type="module">
+        import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.module.js';
+        import { FontLoader } from 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/loaders/FontLoader.js';
+        import { TextGeometry } from 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/geometries/TextGeometry.js';
+
+        let scene, camera, renderer, coins = [];
+
+        function init() {
+            // Scene Setup
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 15;
+
+            // Renderer Setup
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            // Lighting
+            const light = new THREE.PointLight(0xffffff, 1.5);
+            light.position.set(5, 5, 5);
+            scene.add(light);
+
+            // Crypto Textures
+            const textureLoader = new THREE.TextureLoader();
+            const cryptoTextures = [
+                textureLoader.load('https://upload.wikimedia.org/wikipedia/commons/4/46/Bitcoin.svg'),
+                textureLoader.load('https://upload.wikimedia.org/wikipedia/commons/0/05/Ethereum_logo_2014.svg'),
+                textureLoader.load('https://upload.wikimedia.org/wikipedia/en/6/6f/Litecoin.png')
+            ];
+
+            // Create Floating 3D Coins
+            for (let i = 0; i < 10; i++) {
+                let geometry = new THREE.CylinderGeometry(1, 1, 0.3, 32);
+                let material = new THREE.MeshBasicMaterial({
+                    map: cryptoTextures[Math.floor(Math.random() * cryptoTextures.length)],
+                    side: THREE.DoubleSide,
+                    transparent: true
+                });
+
+                let edgeMaterial = new THREE.MeshStandardMaterial({ color: 0xffd700, metalness: 1, roughness: 0.3 });
+
+                let frontFace = new THREE.Mesh(geometry, material);
+                let edge = new THREE.Mesh(geometry, edgeMaterial);
+
+                let coin = new THREE.Group();
+                coin.add(frontFace);
+                coin.add(edge);
+
+                coin.position.set(
+                    (Math.random() - 0.5) * 15,
+                    (Math.random() - 0.5) * 15,
+                    (Math.random() - 0.5) * 15
+                );
+
+                coin.userData = {
+                    speedX: (Math.random() - 0.5) * 0.03,
+                    speedY: (Math.random() - 0.5) * 0.03,
+                    speedZ: (Math.random() - 0.5) * 0.03
+                };
+
+                scene.add(coin);
+                coins.push(coin);
+            }
+
+            // Load Text in the Center
+            const fontLoader = new FontLoader();
+            fontLoader.load('https://threejs.org/examples/fonts/helvetiker_bold.typeface.json', function (font) {
+                const textGeometry = new TextGeometry("UNCB is the best crypto society in Australia", {
+                    font: font,
+                    size: 0.6,
+                    height: 0.1,
+                    curveSegments: 12,
+                    bevelEnabled: true,
+                    bevelThickness: 0.02,
+                    bevelSize: 0.02,
+                    bevelSegments: 5
+                });
+
+                const textMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00, emissive: 0x00ff00 });
+                const textMesh = new THREE.Mesh(textGeometry, textMaterial);
+                textMesh.position.set(-7, 0, 0);
+                scene.add(textMesh);
+            });
+
+            animate();
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            coins.forEach((coin, index) => {
+                // Rotate Coins
+                coin.rotation.y += 0.03;
+                coin.rotation.x += 0.02;
+
+                // Move Coins in Random Floating Pattern
+                coin.position.x += Math.sin(Date.now() * 0.001 + index) * 0.02;
+                coin.position.y += Math.cos(Date.now() * 0.001 + index) * 0.02;
+                coin.position.z += Math.sin(Date.now() * 0.0015 + index) * 0.015;
+
+                // Bounce Effect
+                coin.position.x += coin.userData.speedX;
+                coin.position.y += coin.userData.speedY;
+                coin.position.z += coin.userData.speedZ;
+
+                if (coin.position.x > 7 || coin.position.x < -7) coin.userData.speedX *= -1;
+                if (coin.position.y > 7 || coin.position.y < -7) coin.userData.speedY *= -1;
+                if (coin.position.z > 7 || coin.position.z < -7) coin.userData.speedZ *= -1;
+            });
+
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        init();
+    </script>
+</body>
+</html>

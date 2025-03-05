@@ -1,0 +1,24 @@
+{
+  "name": "uncbisthebest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jhingun1/uncbisthebest.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Jhingun1/uncbisthebest/issues"
+  },
+  "homepage": "https://github.com/Jhingun1/uncbisthebest#readme",
+  "dependencies": {
+    "three": "^0.174.0"
+  }
+}
