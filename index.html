@@ -10,11 +10,11 @@
     </style>
 </head>
 <body>
-    <script type="module">
-        import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.module.js';
-        import { FontLoader } from 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/loaders/FontLoader.js';
-        import { TextGeometry } from 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/geometries/TextGeometry.js';
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three/examples/jsm/loaders/FontLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three/examples/jsm/geometries/TextGeometry.js"></script>
 
+    <script>
         let scene, camera, renderer, coins = [];
 
         function init() {
@@ -76,9 +76,9 @@
             }
 
             // Load Text in the Center
-            const fontLoader = new FontLoader();
+            const fontLoader = new THREE.FontLoader();
             fontLoader.load('https://threejs.org/examples/fonts/helvetiker_bold.typeface.json', function (font) {
-                const textGeometry = new TextGeometry("UNCB is the best crypto society in Australia", {
+                const textGeometry = new THREE.TextGeometry("UNCB is the best crypto society in Australia", {
                     font: font,
                     size: 0.6,
                     height: 0.1,
